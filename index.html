@@ -1,0 +1,1030 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Randstad OneDomain Support Desk</title>
+<meta name="description" content="Onboarding &amp; ticket triage portal for the TCS Google Workspace support team on Randstad OneDomain.">
+<style>
+  /* ---------- Reset & tokens ---------- */
+  *,*::before,*::after{box-sizing:border-box;}
+  :root{
+    --font-display:'Archivo Narrow','Arial Narrow','Liberation Sans Narrow',sans-serif;
+    --font-body:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Helvetica Neue',Arial,sans-serif;
+    --font-mono:'SFMono-Regular','Cascadia Code','Consolas','Liberation Mono',monospace;
+
+    --bg:#f4f5f3;
+    --surface:#ffffff;
+    --surface-2:#ecefea;
+    --surface-3:#e2e6e0;
+    --ink:#171d1b;
+    --ink-soft:#4b5551;
+    --ink-faint:#7c8783;
+    --border:#dadfd8;
+    --border-strong:#c3cac2;
+
+    --accent:#1f6e6a;
+    --accent-strong:#125451;
+    --accent-bg:#e3f0ee;
+    --accent-ring:rgba(31,110,106,0.35);
+
+    --scope-in:#2e7d46;
+    --scope-in-bg:#e4f3e8;
+    --scope-in-border:#bfe2c8;
+
+    --scope-out:#b23a2e;
+    --scope-out-bg:#fbeae7;
+    --scope-out-border:#f0c9c2;
+
+    --warn:#a8701a;
+    --warn-bg:#f7ecd8;
+    --warn-border:#eed7ad;
+
+    --shadow:0 1px 2px rgba(20,30,28,0.04), 0 8px 24px -12px rgba(20,30,28,0.12);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#111616;
+      --surface:#161d1e;
+      --surface-2:#1c2626;
+      --surface-3:#243030;
+      --ink:#eef2ef;
+      --ink-soft:#a9b7b2;
+      --ink-faint:#7c8b86;
+      --border:#2a3634;
+      --border-strong:#38473f;
+
+      --accent:#57c2b3;
+      --accent-strong:#8fe0d3;
+      --accent-bg:#173330;
+      --accent-ring:rgba(87,194,179,0.35);
+
+      --scope-in:#6fce8c;
+      --scope-in-bg:#173321;
+      --scope-in-border:#265c37;
+
+      --scope-out:#e88b7d;
+      --scope-out-bg:#3a1e18;
+      --scope-out-border:#6b3529;
+
+      --warn:#e3b662;
+      --warn-bg:#3a2e14;
+      --warn-border:#6b5323;
+
+      --shadow:0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#111616;
+    --surface:#161d1e;
+    --surface-2:#1c2626;
+    --surface-3:#243030;
+    --ink:#eef2ef;
+    --ink-soft:#a9b7b2;
+    --ink-faint:#7c8b86;
+    --border:#2a3634;
+    --border-strong:#38473f;
+
+    --accent:#57c2b3;
+    --accent-strong:#8fe0d3;
+    --accent-bg:#173330;
+    --accent-ring:rgba(87,194,179,0.35);
+
+    --scope-in:#6fce8c;
+    --scope-in-bg:#173321;
+    --scope-in-border:#265c37;
+
+    --scope-out:#e88b7d;
+    --scope-out-bg:#3a1e18;
+    --scope-out-border:#6b3529;
+
+    --warn:#e3b662;
+    --warn-bg:#3a2e14;
+    --warn-border:#6b5323;
+
+    --shadow:0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+  }
+
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--font-body);
+    font-size:15px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{
+    font-family:var(--font-display);
+    font-weight:700;
+    text-wrap:balance;
+    margin:0;
+    color:var(--ink);
+    letter-spacing:0.01em;
+  }
+  p{margin:0 0 0.75em;max-width:70ch;}
+  a{color:var(--accent-strong);text-decoration-color:var(--border-strong);}
+  a:hover{text-decoration-color:currentColor;}
+  code, .mono{font-family:var(--font-mono);}
+  button{font-family:inherit;}
+  ::selection{background:var(--accent-ring);}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px;}
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important;transition-duration:0.001ms !important;}
+  }
+
+  /* ---------- Shell ---------- */
+  .app{max-width:1180px;margin:0 auto;padding:0 24px 80px;}
+
+  .topbar{
+    position:sticky;top:0;z-index:30;
+    background:var(--bg);
+    border-bottom:1px solid var(--border);
+    padding-top:18px;
+  }
+  .topbar-inner{max-width:1180px;margin:0 auto;padding:0 24px;}
+  .brand-row{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap;}
+  .brand{display:flex;flex-direction:column;gap:2px;}
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--accent-strong);
+  }
+  .brand h1{font-size:26px;}
+  .brand .sub{color:var(--ink-soft);font-size:13.5px;margin-top:2px;}
+
+  .topbar-controls{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+  .theme-toggle{
+    display:flex;align-items:center;gap:8px;
+    background:var(--surface);border:1px solid var(--border-strong);
+    border-radius:20px;padding:5px 12px 5px 6px;
+    font-size:12.5px;color:var(--ink-soft);cursor:pointer;
+  }
+  .theme-toggle .dot{
+    width:16px;height:16px;border-radius:50%;
+    background:var(--accent);flex-shrink:0;
+    transition:transform .15s ease;
+  }
+  .theme-toggle[aria-pressed="true"] .dot{transform:translateX(2px);}
+  .theme-toggle:hover{border-color:var(--accent);}
+
+  /* search */
+  .search-row{margin:16px 0 12px;position:relative;}
+  .search-box{
+    display:flex;align-items:center;gap:10px;
+    background:var(--surface);border:1.5px solid var(--border-strong);
+    border-radius:10px;padding:11px 14px;
+    box-shadow:var(--shadow);
+  }
+  .search-box:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-ring);}
+  .search-box svg{flex-shrink:0;color:var(--ink-faint);}
+  .search-box input{
+    flex:1;border:none;background:transparent;outline:none;
+    font-size:15px;color:var(--ink);font-family:var(--font-body);
+  }
+  .search-box input::placeholder{color:var(--ink-faint);}
+  .search-clear{
+    border:none;background:var(--surface-2);color:var(--ink-soft);
+    width:22px;height:22px;border-radius:50%;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;
+  }
+  .search-clear:hover{background:var(--surface-3);}
+
+  .pill-row{display:flex;gap:8px;flex-wrap:wrap;padding-bottom:16px;}
+  .pill{
+    border:1px solid var(--border-strong);background:var(--surface);
+    color:var(--ink-soft);border-radius:999px;padding:6px 14px;
+    font-size:13px;cursor:pointer;white-space:nowrap;
+    transition:background .1s ease,color .1s ease,border-color .1s ease;
+  }
+  .pill:hover{border-color:var(--accent);color:var(--ink);}
+  .pill.active{background:var(--accent);border-color:var(--accent);color:#ffffff;font-weight:600;}
+
+  .tab-row{
+    display:flex;gap:4px;flex-wrap:wrap;
+    border-bottom:1px solid var(--border);
+    margin-top:2px;
+  }
+  .tab-btn{
+    border:none;background:none;color:var(--ink-soft);
+    font-size:14px;font-weight:600;padding:11px 14px;cursor:pointer;
+    border-bottom:2.5px solid transparent;margin-bottom:-1px;
+    font-family:var(--font-body);
+  }
+  .tab-btn:hover{color:var(--ink);}
+  .tab-btn.active{color:var(--accent-strong);border-bottom-color:var(--accent);}
+
+  main{padding-top:26px;}
+  .view{display:none;}
+  .view.active{display:block;}
+
+  /* results / filter banner */
+  .banner{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+    background:var(--accent-bg);border:1px solid var(--accent);border-radius:10px;
+    padding:10px 16px;margin-bottom:18px;font-size:13.5px;color:var(--ink);
+  }
+  .banner strong{color:var(--accent-strong);}
+  .banner button{
+    border:1px solid var(--accent);background:var(--surface);color:var(--accent-strong);
+    border-radius:999px;padding:4px 12px;font-size:12.5px;cursor:pointer;font-weight:600;
+  }
+  .banner button:hover{background:var(--accent);color:#fff;}
+
+  .section-head{margin-bottom:16px;}
+  .section-head h2{font-size:21px;}
+  .section-head .sub{color:var(--ink-soft);font-size:13.5px;margin-top:4px;max-width:64ch;}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(280px,100%),1fr));gap:14px;}
+
+  /* card */
+  .card{
+    background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--border-strong);
+    border-radius:10px;padding:14px 16px;box-shadow:var(--shadow);
+    display:flex;flex-direction:column;gap:8px;
+  }
+  .card.in{border-left-color:var(--scope-in);}
+  .card.out{border-left-color:var(--scope-out);}
+  .card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+  .card-top h3{font-size:15.5px;line-height:1.35;}
+  .badge{
+    font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.04em;
+    padding:3px 8px;border-radius:5px;font-weight:600;white-space:nowrap;flex-shrink:0;
+  }
+  .badge.in{background:var(--scope-in-bg);color:var(--scope-in);border:1px solid var(--scope-in-border);}
+  .badge.out{background:var(--scope-out-bg);color:var(--scope-out);border:1px solid var(--scope-out-border);}
+  .card p{font-size:13.5px;color:var(--ink-soft);margin:0;}
+  .card .owner{font-size:12.5px;color:var(--ink-faint);}
+  .card .owner b{color:var(--ink-soft);font-weight:600;}
+  .tag-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px;}
+  .tag{
+    font-size:11px;color:var(--ink-faint);background:var(--surface-2);
+    border-radius:5px;padding:2px 7px;
+  }
+  .card-toggle{
+    align-self:flex-start;border:none;background:none;color:var(--accent-strong);
+    font-size:12.5px;font-weight:600;cursor:pointer;padding:0;margin-top:2px;
+  }
+  .card-detail{display:none;border-top:1px solid var(--border);padding-top:10px;margin-top:2px;font-size:13px;color:var(--ink);}
+  .card-detail.open{display:block;}
+  .card-detail ol,.card-detail ul{margin:6px 0 6px 18px;padding:0;}
+  .card-detail li{margin-bottom:4px;}
+
+  /* SOP */
+  .sop{
+    background:var(--surface);border:1px solid var(--border);border-radius:12px;
+    padding:18px 20px;margin-bottom:14px;box-shadow:var(--shadow);
+  }
+  .sop-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px;}
+  .sop-num{
+    font-family:var(--font-mono);font-size:12px;color:var(--accent-strong);
+    background:var(--accent-bg);border-radius:5px;padding:2px 7px;flex-shrink:0;
+  }
+  .sop-head h3{font-size:17px;}
+  .sop .role-line{font-size:12.5px;color:var(--ink-faint);margin-bottom:10px;}
+  .sop .role-line b{color:var(--ink-soft);}
+  .sop ol{margin:0 0 0 20px;padding:0;font-size:13.8px;}
+  .sop ol li{margin-bottom:6px;}
+  .sop .note{
+    font-size:13px;background:var(--warn-bg);border:1px solid var(--warn-border);color:var(--ink);
+    border-radius:8px;padding:8px 12px;margin-top:10px;
+  }
+  .sop .note b{color:var(--warn);}
+  .sop-tags{display:flex;gap:6px;margin-top:10px;}
+
+  /* escalation table */
+  .table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px;background:var(--surface);box-shadow:var(--shadow);}
+  table{width:100%;border-collapse:collapse;font-size:13.8px;min-width:720px;}
+  thead th{
+    text-align:left;font-family:var(--font-display);font-size:12px;letter-spacing:0.04em;
+    text-transform:uppercase;color:var(--ink-soft);background:var(--surface-2);
+    padding:11px 16px;border-bottom:1px solid var(--border);
+  }
+  tbody td{padding:14px 16px;border-bottom:1px solid var(--border);vertical-align:top;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:var(--surface-2);}
+  td.entity{font-weight:700;white-space:nowrap;}
+  td .contact{font-family:var(--font-mono);font-size:12.5px;color:var(--accent-strong);}
+
+  /* triage */
+  .triage-panel{
+    display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;
+  }
+  @media (max-width:640px){.triage-panel{grid-template-columns:1fr;}}
+  .field label{display:block;font-size:12px;font-weight:600;letter-spacing:0.03em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:6px;}
+  select{
+    width:100%;padding:11px 12px;border-radius:9px;border:1.5px solid var(--border-strong);
+    background:var(--surface);color:var(--ink);font-size:14.5px;font-family:var(--font-body);
+    appearance:none;cursor:pointer;
+  }
+  select:disabled{opacity:0.5;cursor:not-allowed;}
+  select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-ring);}
+
+  .verdict-card{
+    border-radius:14px;padding:22px 24px;border:1.5px solid var(--border);
+    background:var(--surface);box-shadow:var(--shadow);
+  }
+  .verdict-card.in{border-color:var(--scope-in-border);background:linear-gradient(180deg,var(--scope-in-bg),var(--surface) 60%);}
+  .verdict-card.out{border-color:var(--scope-out-border);background:linear-gradient(180deg,var(--scope-out-bg),var(--surface) 60%);}
+  .verdict-stripe{
+    display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);
+    font-size:13px;font-weight:700;letter-spacing:0.04em;padding:6px 14px;border-radius:999px;margin-bottom:14px;
+  }
+  .verdict-stripe.in{background:var(--scope-in);color:#fff;}
+  .verdict-stripe.out{background:var(--scope-out);color:#fff;}
+  .verdict-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px 24px;margin-top:14px;}
+  @media (max-width:640px){.verdict-grid{grid-template-columns:1fr;}}
+  .verdict-block h4{font-size:12px;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink-faint);margin-bottom:6px;}
+  .verdict-block p, .verdict-block li{font-size:14px;color:var(--ink);}
+  .verdict-block ol{margin:0;padding-left:20px;}
+  .verdict-block li{margin-bottom:5px;}
+  .empty-state{color:var(--ink-faint);font-size:14px;padding:30px 0;text-align:center;}
+
+  /* canned replies */
+  .reply-card{
+    background:var(--surface);border:1px solid var(--border);border-radius:12px;
+    padding:16px 18px;margin-bottom:14px;box-shadow:var(--shadow);
+  }
+  .reply-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;flex-wrap:wrap;}
+  .reply-head h3{font-size:15.5px;}
+  .copy-btn{
+    display:flex;align-items:center;gap:6px;
+    border:1px solid var(--border-strong);background:var(--surface-2);color:var(--ink-soft);
+    border-radius:8px;padding:6px 12px;font-size:12.5px;font-weight:600;cursor:pointer;flex-shrink:0;
+  }
+  .copy-btn:hover{border-color:var(--accent);color:var(--accent-strong);}
+  .copy-btn.copied{background:var(--scope-in-bg);border-color:var(--scope-in-border);color:var(--scope-in);}
+  .reply-body{
+    white-space:pre-wrap;font-size:13.5px;color:var(--ink-soft);
+    background:var(--surface-2);border-radius:8px;padding:12px 14px;line-height:1.6;
+  }
+
+  /* governance */
+  .gov-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:16px;}
+  @media (max-width:760px){.gov-grid{grid-template-columns:1fr;}}
+  .gov-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;box-shadow:var(--shadow);}
+  .gov-box h3{font-size:15.5px;margin-bottom:10px;}
+  .naming-line{
+    font-family:var(--font-mono);font-size:13px;background:var(--surface-2);border-radius:7px;
+    padding:8px 12px;margin:6px 0;color:var(--accent-strong);
+  }
+  .gov-box ul{margin:0;padding-left:20px;font-size:13.8px;}
+  .gov-box li{margin-bottom:6px;}
+
+  footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--border);color:var(--ink-faint);font-size:12px;}
+</style>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand-row">
+      <div class="brand">
+        <span class="eyebrow">TCS · Google Workspace Support · Randstad OneDomain</span>
+        <h1>OneDomain Support Desk</h1>
+        <span class="sub">Onboarding reference &amp; ticket-triage assistant for 1st/2nd-line Workspace admins</span>
+      </div>
+      <div class="topbar-controls">
+        <button class="theme-toggle" id="themeToggle" aria-pressed="false" title="Toggle dark mode">
+          <span class="dot" id="themeDot"></span>
+          <span id="themeLabel">Light</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="search-row">
+      <div class="search-box">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="searchInput" type="text" placeholder="Search scope rules, SOPs, canned replies… e.g. &quot;shared drive&quot;, &quot;phishing&quot;, &quot;AA account&quot;" autocomplete="off">
+        <button class="search-clear" id="searchClearBtn" title="Clear search" style="display:none;">✕</button>
+      </div>
+    </div>
+
+    <div class="pill-row" id="pillRow"></div>
+
+    <nav class="tab-row" id="tabRow">
+      <button class="tab-btn active" data-tab="triage">🎯 Ticket Triage Assistant</button>
+      <button class="tab-btn" data-tab="scope">📊 Scope Matrix</button>
+      <button class="tab-btn" data-tab="sops">📖 SOPs</button>
+      <button class="tab-btn" data-tab="escalation">🚀 Escalation Directory</button>
+      <button class="tab-btn" data-tab="canned">💬 ServiceNow Canned Replies</button>
+      <button class="tab-btn" data-tab="governance">🛡️ Admin Roles &amp; Governance</button>
+    </nav>
+  </div>
+</div>
+
+<div class="app">
+  <main>
+
+    <!-- RESULTS / FILTER VIEW -->
+    <section class="view" id="view-results">
+      <div class="banner" id="resultsBanner"></div>
+      <div class="grid" id="resultsGrid"></div>
+    </section>
+
+    <!-- TRIAGE -->
+    <section class="view active" id="view-triage">
+      <div class="section-head">
+        <h2>Ticket Triage Assistant</h2>
+        <p class="sub">Pick the category the ticket falls under, then the specific issue. You'll get the scope verdict, who owns it, why, and exactly what to do next.</p>
+      </div>
+      <div class="triage-panel">
+        <div class="field">
+          <label for="triageCategory">1. Category</label>
+          <select id="triageCategory">
+            <option value="">Select a category…</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="triageIssue">2. Issue</label>
+          <select id="triageIssue" disabled>
+            <option value="">Select a category first…</option>
+          </select>
+        </div>
+      </div>
+      <div id="triageOutput"><div class="empty-state">Select a category and issue above to see the triage verdict.</div></div>
+    </section>
+
+    <!-- SCOPE MATRIX -->
+    <section class="view" id="view-scope">
+      <div class="section-head">
+        <h2>Scope Matrix</h2>
+        <p class="sub">What TCS 1st/2nd-line owns end-to-end, and what gets transferred or escalated on sight.</p>
+      </div>
+      <h3 style="margin:18px 0 10px;color:var(--scope-in);font-size:14px;">🟢 In-Scope — TCS owns this</h3>
+      <div class="grid" id="scopeInGrid"></div>
+      <h3 style="margin:26px 0 10px;color:var(--scope-out);font-size:14px;">🔴 Out-of-Scope — transfer / escalate</h3>
+      <div class="grid" id="scopeOutGrid"></div>
+    </section>
+
+    <!-- SOPs -->
+    <section class="view" id="view-sops">
+      <div class="section-head">
+        <h2>Standard Operating Procedures</h2>
+        <p class="sub">Twelve step-by-step SOPs for the highest-volume, highest-risk request types.</p>
+      </div>
+      <div id="sopList"></div>
+    </section>
+
+    <!-- ESCALATION -->
+    <section class="view" id="view-escalation">
+      <div class="section-head">
+        <h2>Escalation Directory</h2>
+        <p class="sub">Who's next in the chain when a ticket isn't TCS's to finish.</p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Tier / Entity</th><th>Responsibilities</th><th>Transfer method / contact</th></tr></thead>
+          <tbody id="escalationBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- CANNED REPLIES -->
+    <section class="view" id="view-canned">
+      <div class="section-head">
+        <h2>ServiceNow Canned Replies</h2>
+        <p class="sub">Click "Copy" to grab the exact wording used on live tickets.</p>
+      </div>
+      <div id="cannedList"></div>
+    </section>
+
+    <!-- GOVERNANCE -->
+    <section class="view" id="view-governance">
+      <div class="section-head">
+        <h2>Admin Roles &amp; Governance</h2>
+        <p class="sub">Naming standards and role rules — get these wrong and the account has to be rebuilt.</p>
+      </div>
+      <div class="gov-grid">
+        <div class="gov-box">
+          <h3>AA account — mandatory when granting</h3>
+          <ul>
+            <li><b>Super Admin</b></li>
+            <li><b>Global – Delegated Admin</b> (non-OU restricted)</li>
+          </ul>
+          <p style="font-size:13px;color:var(--ink-soft);margin-top:10px;">Both roles require a dedicated <code>aa.</code> account, separate from the person's regular login. Extra licence cost is billed to the OpCo. Any other role can simply be granted on the person's primary account.</p>
+          <div class="naming-line">aa.firstname.lastname@opcodomain.xx</div>
+          <div class="naming-line">Display name: AA Firstname Lastname</div>
+        </div>
+        <div class="gov-box">
+          <h3>Custom Admin Role (CAR) naming</h3>
+          <p style="font-size:13px;color:var(--ink-soft);">Every new custom role must declare its blast radius in the name itself.</p>
+          <div class="naming-line">OneDomain CAR | DW | [Name] <span style="color:var(--ink-faint);">— domain-wide</span></div>
+          <div class="naming-line">OneDomain CAR | OU | [Name] <span style="color:var(--ink-faint);">— OU-restricted</span></div>
+          <h3 style="margin-top:16px;">Other mandatory naming</h3>
+          <div class="naming-line">sa.[applicationname].admin@… <span style="color:var(--ink-faint);">— service accounts</span></div>
+          <div class="naming-line">@dev.opcodomain.com <span style="color:var(--ink-faint);">— dev.randstad.com (fallback: @dev.adm.randstad.com)</span></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>Internal reference for TCS Google Workspace Support · Randstad OneDomain. Source: Randstad Global Google Support — activities by TCS.</footer>
+</div>
+
+<script>
+(function(){
+
+/* ============================= DATA ============================= */
+
+var SCOPE_IN = [
+  {id:'in-aa', title:'OneDomain Admin Account creation (AA-prefix)', owner:'TCS Super Admin', tags:['accounts'],
+    detail:'AA accounts are always separate from the person\'s regular account, always @opcodomain.xx, and always placed in the OpCo OU. Naming: aa.firstname.lastname@ / display "AA Firstname Lastname". Exception: OpCo not yet on OneDomain → use @adm.randstad.com. Exception: existing .NL or .COM users → forward to iService, do not create.'},
+  {id:'in-sa', title:'Application service account provisioning', owner:'TCS Super Admin', tags:['accounts'],
+    detail:'sa.[appname].admin@ naming, password reset immediately and never logged, direct login monitored, account isolated in its own OU with Gmail/Drive disabled where possible.'},
+  {id:'in-dev', title:'dev.randstad.com account setup', owner:'TCS Admin', tags:['accounts'],
+    detail:'@dev.opcodomain.com (fallback @dev.adm.randstad.com). AA-prefix naming for admins. Never grant super admin on dev — only the OpCo Admin role.'},
+  {id:'in-restore', title:'Restore a suspended account', owner:'TCS Super Admin', tags:['accounts'],
+    detail:'3 mandatory steps: 1) Activate the account 2) Move to the correct OU 3) Re-enable "Automatically share…contact information".'},
+  {id:'in-profile', title:'User profile updates (name, alias, OU)', owner:'TCS Google Admin', tags:['accounts'],
+    detail:'Name/email changes, adding or removing an alias, and moving a user to a standard OU are all direct TCS actions. VIP/protected OUs are the exception — do not touch without PO Workspace approval.'},
+  {id:'in-drive-create', title:'Shared Drive creation', owner:'TCS Super Admin', tags:['drives'],
+    detail:'Only fulfilled from a ServicePortal reqtask, never from a raw incident. Requester is added as the sole member with Manager role; the admin removes themselves once created.'},
+  {id:'in-bulk-migrate', title:'Bulk MyDrive → Shared Drive migration', owner:'TCS Super Admin', tags:['drives'],
+    detail:'Grant the temporary "Shared Drive Admin" role, let the user drag-and-drop, then revoke the role 2–3 hours later to prevent accidental follow-on migrations. Full sync can take up to 48 hours.'},
+  {id:'in-phish', title:'Phishing &amp; spam containment', owner:'TCS Super Admin', tags:['security'],
+    detail:'Collect the message header (Show Original → Download Original), add the sender/domain to Blocked Senders in Gmail Advanced Settings, and use the Investigation Tool to quarantine or delete at scale.'},
+  {id:'in-logsearch', title:'Email log search (rfc822msgid tracking)', owner:'TCS Google Admin', tags:['security'],
+    detail:'Confirm delivery via Email Log Search, then hand the user the rfc822msgid: search operator to locate the message themselves. Never export raw mail data.'},
+  {id:'in-calres', title:'Calendar resource management', owner:'TCS Google Admin', tags:['calendar'],
+    detail:'Create/update/delete meeting rooms and equipment resources; default sharing is "See only free/busy" for Royal Randstad — never "public".'},
+  {id:'in-leaver-cal', title:'Leaver calendar meetings', owner:'TCS Super Admin', tags:['calendar'],
+    detail:'Delete a recurring series (with the correct "this / following / all events" scope) or transfer ownership to a successor via Change Owner.'},
+  {id:'in-groups', title:'Google Groups management', owner:'TCS Google Admin', tags:['accounts'],
+    detail:'Create/update/delete groups; external members are always set to "No email" delivery; step in as manager only when the real owner is unreachable.'},
+  {id:'in-dma', title:'Ausy DMA (admin toolkit) access', owner:'TCS Google Admin', tags:['accounts'],
+    detail:'Grant OU-scoped WRITE rights in the Domain Management Tool. ExitSecurityRights and EditSettings are always left blank — no exceptions.'},
+  {id:'in-chrome-ext', title:'Approved Chrome extensions', owner:'TCS Google Admin', tags:['accounts'],
+    detail:'After a security review, toggle "Include in the Chrome Web Store collection" for the OU\'s allow-listed app and save.'},
+  {id:'in-marketplace', title:'Marketplace app installation', owner:'TCS Google Admin', tags:['accounts'],
+    detail:'Admin-install to "Certain groups or organizational units" for scoped rollouts — never "Everyone at your organization" unless that is explicitly the request.'},
+  {id:'in-smtp', title:'SMTP Relay Service configuration', owner:'TCS Super Admin', tags:['security'],
+    detail:'Ticket/change number mandatory in the description field. SMTP Authentication and TLS are mandatory per DF RTPS Security Team. Only the first "Allowed senders" option is ever selected.'}
+];
+
+var SCOPE_OUT = [
+  {id:'out-enduser', title:'Regular end-user account creation', to:'Local OpCo IT / Quantum', tags:['accounts'],
+    detail:'Created by local OpCo admins or automated provisioning (e.g. Quantum in NL). TCS Admins should refrain from creating end-user accounts.'},
+  {id:'out-nlcom', title:'Admin accounts for .NL / existing .COM users', to:'iService (RGN)', tags:['accounts'],
+    detail:'These users already have a randstad.com or .nl account managed by RGN — forward the request to the iService Portal instead of creating locally.'},
+  {id:'out-globalsettings', title:'Core Workspace global settings / feature toggles', to:'Ausy (after PO approval)', tags:[],
+    detail:'Enabling/disabling services, pushing new features, or changing domain-wide settings all route through PO Google Workspace approval before Ausy executes.'},
+  {id:'out-appscript', title:'Google AppScript development &amp; errors', to:'Ausy', tags:[],
+    detail:'TCS does not support Apps Script. Assign directly to Ausy.'},
+  {id:'out-sites', title:'Google Sites, Vault, Maps, YouTube, Android OS', to:'Ausy', tags:[],
+    detail:'All four are explicitly excluded from TCS support and redirect straight to Ausy.'},
+  {id:'out-chrome', title:'Chrome browser crashes / desktop OS AppData issues', to:'Local OpCo IT', tags:[],
+    detail:'Chrome management sits with the OpCo. Local IT owns crash/AppData-level troubleshooting on the device itself.'},
+  {id:'out-ga4', title:'Google Analytics / GA4', to:'GA4@randstad.com / ronald.leenstra@randstad.com', tags:[],
+    detail:'Issue-related questions only — no active usage support, and no reporting/dashboard support. Teams are expected to build that knowledge themselves.'},
+  {id:'out-training', title:'Consultancy &amp; user training requests', to:'PO Google Workspace / Ausy', tags:[],
+    detail:'Transferred, not fulfilled by TCS.'},
+  {id:'out-allowlist', title:'Unapproved IP / domain allow-listing', to:'Global Security Team + PO (approval required)', tags:['security'],
+    detail:'Prohibited by default. The only path in is explicit sign-off from the Global Security Team and PO Google Workspace — without it, decline and escalate.'},
+  {id:'out-export', title:'User data exports (Gmail, Drive, Contacts)', to:'Declined — data privacy policy', tags:['security'],
+    detail:'Never fulfilled, regardless of requester seniority. State the privacy policy and close.'}
+];
+
+var SOPS = [
+  {n:1,title:'OneDomain Admin Account Creation',role:'TCS Super Admin',tags:['accounts'],
+    steps:[
+      'Confirm the requester actually needs Super Admin or Global-Delegated-Admin (non-OU) — if so, this MUST be an AA account, never a role bolted onto a regular login.',
+      'Check for the .NL / existing .COM exception first — if the user already has a randstad.com or .nl account, stop and forward to iService instead of creating anything.',
+      'Create the account at aa.firstname.lastname@opcodomain.xx, placed in the OpCo OU.',
+      'Exception: if the OpCo is not yet on OneDomain, use @adm.randstad.com instead.',
+      'Set the display name to match: "AA Firstname Lastname".',
+      'Flag the additional licence cost for billing to the OpCo.',
+      'Assign the requested role and close with the AA credentials handed over via a secure channel.'
+    ]},
+  {n:2,title:'Service Account Provisioning &amp; Security Isolation',role:'TCS Super Admin',tags:['accounts'],
+    steps:[
+      'Name the account sa.[applicationname].admin@ and the display name "SA [Application name] Admin".',
+      'Create and activate the account, then immediately reset the password — do not log it anywhere in your own systems.',
+      'Place the account in a dedicated Org Unit for that application.',
+      'As an added precaution, disable Gmail/Drive (and any other non-essential service) on that OU so a compromised account can\'t be used to exfiltrate mail or files.',
+      'Restrict who can log in directly to the account — direct sign-in should be monitored and reserved for technical/support reasons only.'
+    ]},
+  {n:3,title:'dev.randstad.com Account Setup',role:'TCS Admin',tags:['accounts'],
+    steps:[
+      'Confirm the requester is outside NL and not an existing @randstad.com Global user — those groups request dev access differently.',
+      'Create the account at @dev.OPCODOMAIN.com.',
+      'If no OpCo domain prefix exists, fall back to @dev.adm.randstad.com.',
+      'For admin accounts, keep the AA-prefix naming convention (email and display name).',
+      'Assign the "OpCo Admin" role only — never grant super-admin access on the dev environment, under any circumstance.'
+    ]},
+  {n:4,title:'Suspended User Restoration',role:'TCS Super Admin',tags:['accounts'],
+    steps:[
+      'Restore the account in Admin Console by setting status to Active.',
+      'Move the account to its correct Org Unit.',
+      'Check the box for "Automatically share …’s contact information" so the profile reappears in Contacts/Gmail/Calendar.'
+    ],
+    note:'All three steps are mandatory — skipping the contact-sharing step is the most common miss and leaves the restored user invisible to colleagues.'},
+  {n:5,title:'Shared Drive Creation Process &amp; Naming Convention',role:'TCS Super Admin',tags:['drives'],
+    steps:[
+      'Confirm the request came from ServicePortal, not a raw incident — if it\'s an incident, redirect the user to ServicePortal instead of creating the drive.',
+      'Open your super admin account → Google Drive → Shared Drives → right-click → Create new.',
+      'Name it exactly as submitted in the reqtask, following the Shared Drives naming convention.',
+      'Add Members → add the requester only, one user, with the Manager role.',
+      'Message the requester through Drive with the ticket number confirming creation.',
+      'Add Members again → Manage Members → find your own account → Remove member → confirm.',
+      'Close the ticket after sending both "Shared Drives – An Introduction" and "Shared Drives – Manual and FAQ".'
+    ],
+    note:'TCS creates the drive and nothing else. All member/content management beyond the initial Manager is the requester\'s responsibility.'},
+  {n:6,title:'Bulk MyDrive → Shared Drive Migration',role:'TCS Super Admin → Shared Drive Admin (temporary)',tags:['drives'],
+    steps:[
+      'Grant the user the temporary "Shared Drive Admin" role.',
+      'User drags-and-drops the files/folders they own into the target Shared Drive.',
+      'Warn the user that migration can take up to 48 hours to fully complete — files may still appear in the original location during that window; this is expected.',
+      'Confine the migration to the requester\'s original request only — no repeat or "just in case" migrations.'
+    ],
+    note:'2–3 hours after migration starts, revoke the "Shared Drive Admin" role to prevent any accidental follow-on file moves.'},
+  {n:7,title:'Phishing Header Extraction &amp; Sender Blocking',role:'TCS Super Admin',tags:['security'],
+    steps:[
+      'Ask the reporter to open the message, click the arrow next to Reply → Show Original → Download Original, and attach the file to the SNOW incident.',
+      'In Admin Console: Apps → Google Workspace → Gmail → Advanced settings, with the correct organization selected.',
+      'Open Blocked senders → Edit → Blocked accounts → Edit.',
+      'Add the offending sender address or domain (use the return-path address) and Save. Repeat for additional addresses/domains.',
+      'For active spread or quarantine: open the Investigation Tool → Gmail Logs → filter on From (Header) and To (envelope), group results by Event (or by Attachment for malware spread), then take bulk Action — delete from inbox, or mark spam/phishing.',
+      'Allow up to an hour for the blocked-sender change to propagate; verify in the Admin console audit log.'
+    ]},
+  {n:8,title:'Leaver Calendar Meeting Deletion &amp; Ownership Transfer',role:'TCS Super Admin',tags:['calendar'],
+    steps:[
+      'In Google Calendar, add the leaver\'s calendar via "Add a coworker\'s calendar" using their email address.',
+      'To delete: open the event → Delete icon → choose the correct scope (This event only / This and following / All events in the series).',
+      'To transfer instead: open the event → More actions → Change owner → enter the new owner and a message → Change owner.',
+      'Note that the leaver remains the event owner until the new owner accepts the ownership-transfer email.'
+    ]},
+  {n:9,title:'Calendar Resource (Meeting Room) Creation &amp; Free/Busy Sharing',role:'TCS Google Admin',tags:['calendar'],
+    steps:[
+      'Admin Console → Apps → Google Workspace → Calendar → Resources.',
+      'Create the resource following Randstad\'s naming convention.',
+      'Check "Make available for Royal Randstad" to publish it domain-wide.',
+      'Set access to "See only free/busy (hide details)" — the default and standard setting for resources.',
+      'For resource sharing with a specific user/group: open sharing settings → Access Permissions (never "Make available to the public") → add the person/group under "Share with specific people" → default access is "See free/busy"; the highest tier ("Make changes and manage sharing") triggers a notification email to the grantee.'
+    ]},
+  {n:10,title:'Ausy DMA Tool Permission Configuration',role:'TCS Google Admin',tags:['accounts'],
+    steps:[
+      'Open the DMA tool for the specific domain the user needs (OneDomain, or the relevant country instance) — access is granted per-domain, separately for each.',
+      'Navigate to Edit Security Rights.',
+      'Search for the username in the top field and wait for auto-complete — never type the full email manually.',
+      'Select the name → Add User.',
+      'Set the OrgUnit path to the root OU for that OpCo (only the acting Super Admin gets whole-domain access; everyone else is OU-scoped).',
+      'Set every action to WRITE except ExitSecurityRights and EditSettings, which are always left blank.',
+      'Save. Confirm the user now sees the expected features in the DMA tool for that OU, then close the ticket.'
+    ]},
+  {n:11,title:'Adding Chrome Extensions to the Approved Collection',role:'TCS Google Admin',tags:['accounts'],
+    steps:[
+      'Admin Console → Devices → Chrome → Apps &amp; Extensions.',
+      'Find the extension already pushed/allow-listed for the OU and click it to open the detail panel.',
+      'Toggle "Include in the Chrome Web Store collection".',
+      'Click Save at the top to enforce the change.',
+      'Confirm the extension now appears in the Randstad Chrome Web Store collection for end-users.'
+    ]},
+  {n:12,title:'Monthly Super Admin Audit Report Archival',role:'TCS Super Admin',tags:[],
+    steps:[
+      'Admin Console → Reports → Audit → Admin.',
+      'Set Date Range to the exact start/end dates of the previous month (don\'t rely on a relative "last month" preset).',
+      'Save the report as a Google Sheet under your admin account.',
+      'Move the sheet into the monthly Admin Actions folder.'
+    ]}
+];
+
+var CANNED = [
+  {id:'r1', title:'1st reminder — no response from user', tags:['canned'],
+    body:'Hi,\n\nWe’ve sent you a solution, question or remark regarding your ticket but haven’t heard back from you. Please check our latest comment and we hope to hear from you as soon as possible.\n\nTeam Google Support'},
+  {id:'r2', title:'2nd reminder — 48-hour auto-close warning', tags:['canned'],
+    body:'Hi,\n\nThis is our second reminder that we’ve sent you a solution, question or remark regarding your ticket but haven’t received a response. Please check our latest comment and we hope to hear from you as soon as possible.\n\nIf we don’t hear from you in the next 48 hours, we considered this case resolved/canceled and move the status to closed.\n\nTeam Google Support'},
+  {id:'r3', title:'Last reminder — 24-hour final notice', tags:['canned'],
+    body:'Hi,\n\nThis is our last reminder for this ticket, we’ve sent you a solution, question or remark regarding your ticket but you haven’t responded. Please check our latest comment and reply as soon as possible. This ticket will be closed within 24 hours.\n\nTeam Google Support'},
+  {id:'r4', title:'3rd-party app / extension security review check', tags:['canned'],
+    body:'Hi,\n\nBefore we can allow this application/app to access our environment we would like to know if a security review has been performed, keeping in mind privacy, data security, etc.\nPlease let us know if this has been performed, whereafter our team will take the necessary actions to allow the application.\n\nTeam Google Support'},
+  {id:'r5', title:'Email migration completed confirmation', tags:['canned'],
+    body:'The requested migration has been completed, in total an amount of XXXX e-mails are migrated. This ticket will now be closed.'},
+  {id:'r6', title:'RGN idea portal redirect (Dutch)', tags:['canned'],
+    body:'Het beste idee, dat heb jij! En de beste IT-oplossing hebben wij. Jouw idee kan je achterlaten in de idea portal. Het doel? Zorgen dat jouw idee gehoord wordt, dat dit transparant is en dat wij met jou in gesprek blijven over je idee.\n\nMeer informatie over de Idea Portal en het indienen van je idee vind je terug via de RGN Idea Portal en het ServiceNow idea-formulier.'}
+];
+
+var ESCALATION = [
+  {entity:'Ausy', resp:'2nd/3rd-line application support · owns the Domain Management Tool (DMA) · AppScript, Sites, Vault, Maps, YouTube, Android OS support · executes global settings/feature changes after PO sign-off', contact:'Re-assign the ticket to the Ausy support queue'},
+  {entity:'Google Support (4th line)', resp:'P1/P2 platform outages and incidents', contact:'TCS Super Admins open a ticket directly via Admin Console Support — bypassing Ausy'},
+  {entity:'Local OpCo IT / Quantum', resp:'Regular end-user provisioning · desktop OS &amp; Chrome-browser crash issues · local IT policy', contact:'Re-assign to the local OpCo IT queue'},
+  {entity:'iService / RGN', resp:'Admin accounts for existing .NL and .COM (randstad.com) users · tst.randstad.com access', contact:'Forward to the iService Portal / RGN Quantum knowledge article'},
+  {entity:'Product Owner (PO) Google Workspace', resp:'Approves global settings changes, feature toggles, VIP-OU changes, consultancy &amp; training requests', contact:'Route the ticket for PO sign-off before any Ausy execution'},
+  {entity:'Global Security Team / DF RTPS', resp:'Allow-list approvals (IP / email / domain) · mandates SMTP Auth + TLS on relays · security reviews for 3rd-party apps', contact:'Escalate as a security review request; always cite the ticket # in the SMTP relay description'},
+  {entity:'GA4 / Google Analytics', resp:'Platform-specific issues only — no usage support, no reporting/dashboard help', contact:'GA4@randstad.com (GA4) · ronald.leenstra@randstad.com (Google Analytics)'}
+];
+
+var TRIAGE = [
+  {key:'accounts', label:'Accounts & Access', issues:[
+    {label:'Create a regular end-user account', verdict:'out', owner:'Local OpCo IT / Quantum', policy:'End-user provisioning is owned locally, often through automated tooling like Quantum in the Netherlands. TCS Admins should refrain from creating end-user accounts.', steps:['Re-assign the ticket to the Local OpCo IT queue.','Point the requester to their local provisioning process if self-service is available.']},
+    {label:'Create a OneDomain admin (AA) account', verdict:'in', owner:'TCS Super Admin', policy:'Super Admin and non-OU Global-Delegated-Admin roles must run on a dedicated AA account, fully separate from the person\'s regular login, billed as an extra licence to the OpCo.', steps:['Check the .NL/.COM exception first — if it applies, stop and forward to iService instead.','Create aa.firstname.lastname@opcodomain.xx in the OpCo OU (see SOP 1).','Set display name "AA Firstname Lastname" and assign the requested role.']},
+    {label:'Admin account for an existing .NL or .COM user', verdict:'out', owner:'iService (RGN)', policy:'Users who already have a randstad.com or .nl account are managed by RGN — TCS does not create admin accounts for them.', steps:['Forward the request to the iService Portal.','Close the TCS ticket referencing the iService case.']},
+    {label:'Create an application service account', verdict:'in', owner:'TCS Super Admin', policy:'Service accounts are in-scope but must follow strict isolation practice — dedicated naming, immediate password reset, monitored logins, restricted OU.', steps:['Follow SOP 2: name as sa.[appname].admin@, isolate in a dedicated OU, reset & discard the password, disable non-essential services on that OU.']},
+    {label:'Request access to dev.randstad.com', verdict:'in', owner:'TCS Admin', policy:'Dev-environment accounts are created by TCS Admins for OpCo\'s outside NL/Global — but admins never receive super-admin rights there, only the OpCo Admin role.', steps:['Follow SOP 3: create @dev.opcodomain.com (or @dev.adm.randstad.com fallback), AA-prefix if admin, assign OpCo Admin role only.']},
+    {label:'Restore a suspended account', verdict:'in', owner:'TCS Super Admin', policy:'Restoration is a standard TCS action, but it is only complete once all three mandatory steps have run.', steps:['Follow SOP 4: Activate → Move to correct OU → Re-enable "Automatically share contact information".']},
+    {label:'Move an account into a VIP / protected OU', verdict:'out', owner:'PO Google Workspace (approval required)', policy:'A set of special VIP OUs must never be changed without PO Workspace sign-off.', steps:['Do not action the move.','Route the request to PO Google Workspace for approval before any OU change.']},
+    {label:'Change a user\'s name, email, or alias', verdict:'in', owner:'TCS Google Admin', policy:'Standard directory edits — name changes, alias add/remove — are direct TCS actions with no approval gate.', steps:['Use Admin Console\'s directory user-edit flow to change the name/email.','For aliases, add/remove under the user\'s account "Email aliases" section.']}
+  ]},
+  {key:'security', label:'Security, Phishing & Compliance', issues:[
+    {label:'User reports a phishing or spam email', verdict:'in', owner:'TCS Super Admin', policy:'Phishing containment — header collection, sender blocking, and Investigation Tool quarantine — is core TCS work.', steps:['Follow SOP 7: get the message header, add the sender/domain to Blocked Senders, and use the Investigation Tool for bulk action if the campaign has spread.']},
+    {label:'Request to allow-list an IP, domain, or email address', verdict:'out', owner:'Global Security Team + PO Workspace', policy:'Allow-listing is prohibited by default on the Randstad domain. The only way in is explicit approval from both the Global Security Team and PO Google Workspace.', steps:['Do not allow-list anything on request alone.','Escalate to Global Security Team / PO for a decision.','Only execute the change once written approval is attached to the ticket.']},
+    {label:'Set up an SMTP relay for an application', verdict:'in', owner:'TCS Super Admin', policy:'In-scope, but DF RTPS Security Team mandates SMTP Authentication and TLS on every relay, and the ticket number must be recorded in the relay description.', steps:['Follow the SMTP relay SOP: Gmail settings → Advanced → SMTP Relay → Add new.','Enable SMTP Auth and TLS (non-negotiable).','Record the ticket/change number in the description and submit only the first "Allowed senders" option.']},
+    {label:'Request to export a user\'s Gmail, Drive, or Contacts data', verdict:'out', owner:'Declined outright', policy:'Company data-privacy policy prohibits exporting employee data for users, regardless of the reason given.', steps:['Decline the request and cite the data privacy policy.','Do not attempt a partial or "read-only" export.']},
+    {label:'Request delegated access to another user\'s mailbox', verdict:'in', owner:'TCS Google Admin (via Ausy DMA)', policy:'Delegation is facilitated by TCS but executed through Ausy\'s Admin Toolkit, and only with the account owner\'s prior consent (or the owning team\'s, for service accounts).', steps:['Confirm consent from the mailbox owner is documented on the ticket.','Grant/route the delegation through Ausy\'s DMA tool.']},
+    {label:'Run the monthly Super Admin audit report', verdict:'in', owner:'TCS Super Admin', policy:'A recurring compliance task, not ticket-driven, but still owned end-to-end by TCS.', steps:['Follow SOP 12: pull the Admin audit report for exact prior-month dates, save as a Sheet, and file it in the monthly Admin Actions folder.']}
+  ]},
+  {key:'drives', label:'Shared Drives & Files', issues:[
+    {label:'Request a new Shared Drive', verdict:'in', owner:'TCS Super Admin', policy:'Fulfilled only from a ServicePortal reqtask — never directly from an incident.', steps:['If raised as an incident, redirect the user to ServicePortal first.','Once the reqtask lands, follow SOP 5 exactly, including removing yourself as a member after creation.']},
+    {label:'Bulk-move files from MyDrive into a Shared Drive', verdict:'in', owner:'TCS Super Admin', policy:'Requires the temporary "Shared Drive Admin" role, which carries real risk if left active too long.', steps:['Follow SOP 6: grant the role, let the user migrate, then revoke the role 2–3 hours later without exception.']},
+    {label:'Restore deleted Drive files', verdict:'in', owner:'TCS Super Admin', policy:'Google Drive Trash restores happen in bulk by date range, not file-by-file.', steps:['Use the Admin help article\'s bulk-restore flow for the affected date range.']},
+    {label:'Transfer ownership of a Drive file (active account)', verdict:'in', owner:'TCS Google Admin (rare, manager-approved only)', policy:'Users should transfer files to each other directly wherever possible. IT only steps in when the owner is unavailable, and only with "next in line" manager approval.', steps:['First ask the requester to contact the file owner directly.','If unavailable, get written approval from the owner\'s manager/next-in-line before transferring.']},
+    {label:'External partner needs access to a shared Drive file', verdict:'in', owner:'TCS Google Admin', policy:'External, non-Randstad users need a Google ID (not a Google Account) linked to their personal email to receive access.', steps:['Send the "Creating Google ID – Quick reference guide" to the Randstad user to forward externally.','Clarify in the ticket that a Google ID only identifies the person — it is not a Randstad account.']}
+  ]},
+  {key:'calendar', label:'Calendar', issues:[
+    {label:'Create or update a meeting-room resource', verdict:'in', owner:'TCS Google Admin', policy:'Standard resource management, published with a safe default of free/busy-only visibility.', steps:['Follow SOP 9 to create the resource and, if requested, publish it domain-wide at "See only free/busy".']},
+    {label:'Delete a leaver\'s recurring meetings', verdict:'in', owner:'TCS Super Admin', policy:'Straightforward calendar cleanup once the leaver\'s calendar is added to your view.', steps:['Follow SOP 8: add the leaver\'s calendar, open the series, delete with the correct recurrence scope.']},
+    {label:'Transfer ownership of a leaver\'s recurring meeting', verdict:'in', owner:'TCS Super Admin', policy:'Ownership transfer keeps the meeting alive for the team instead of deleting it outright.', steps:['Follow SOP 8: More actions → Change owner → enter the successor and a message.']},
+    {label:'Create a shared team/department calendar', verdict:'in', owner:'TCS Google Admin', policy:'Must live on a service account, never a personal one, so it survives the owner leaving the company.', steps:['Ask for (or provision) a relevant service account.','Walk the requester through creating the secondary calendar on that account.']}
+  ]},
+  {key:'appsChrome', label:'Groups, Apps & Chrome', issues:[
+    {label:'Create, update, or delete a Google Group', verdict:'in', owner:'TCS Google Admin', policy:'Direct Admin Console action following Randstad\'s Groups naming convention.', steps:['Directory → Groups → create/edit per the naming convention.','External members are always set to "No email" delivery.']},
+    {label:'Google AppScript is throwing errors', verdict:'out', owner:'Ausy', policy:'Apps Script support is explicitly excluded from TCS scope.', steps:['Assign the ticket directly to Ausy.']},
+    {label:'Issue with Google Sites, Vault, Maps, YouTube, or Android OS', verdict:'out', owner:'Ausy', policy:'All five are excluded from TCS support regardless of severity.', steps:['Re-assign to Ausy.']},
+    {label:'Install a Marketplace app for a specific group/OU', verdict:'in', owner:'TCS Google Admin', policy:'Scoped installs are in-scope; org-wide installs carry real blast radius and deserve a second look.', steps:['Admin-install to "Certain groups or organizational units" rather than "Everyone" unless that is explicitly what was requested.']},
+    {label:'Approve a new Chrome extension for the Web Store collection', verdict:'in', owner:'TCS Google Admin', policy:'In-scope once a security review has been performed.', steps:['Send the security-review canned reply if none is on file yet.','Once cleared, follow SOP 11 to add it to the approved collection.']},
+    {label:'Chrome keeps crashing / AppData looks corrupted', verdict:'out', owner:'Local OpCo IT', policy:'Device-level Chrome and desktop OS issues are owned locally, not by TCS Workspace support.', steps:['Re-assign to Local OpCo IT.']},
+    {label:'Question about Google Analytics / GA4', verdict:'out', owner:'GA4@randstad.com / ronald.leenstra@randstad.com', policy:'Analytics has its own dedicated contacts and does not receive general usage or dashboard support from TCS or those contacts.', steps:['Redirect the requester to the appropriate contact.']},
+    {label:'Request for consultancy or Workspace training', verdict:'out', owner:'PO Google Workspace / Ausy', policy:'Training and consultancy requests are transferred, not fulfilled directly.', steps:['Transfer the ticket to PO Google Workspace or Ausy as appropriate.']},
+    {label:'Grant access to Ausy\'s Domain Management Tool (DMA)', verdict:'in', owner:'TCS Google Admin', policy:'In-scope, but OU-scoped by design — only the acting Super Admin can be domain-wide.', steps:['Follow SOP 10: auto-complete the username, set the OU, WRITE on everything except ExitSecurityRights/EditSettings which stay blank.']},
+    {label:'Toggle a core Workspace global setting', verdict:'out', owner:'Ausy (after PO approval)', policy:'Global settings changes always route through PO Workspace approval before Ausy executes.', steps:['Route the request to PO Workspace for a decision.','Once approved, hand off to Ausy for execution — TCS does not make the change itself.']},
+    {label:'Authorize a 3rd-party app not in the Marketplace', verdict:'in', owner:'TCS Google Admin', policy:'In-scope once a security review has been confirmed.', steps:['Send the "security review check" canned reply if one hasn\'t been done.','Once confirmed, follow the authorization procedure to grant access.']}
+  ]}
+];
+
+/* ============================= STATE ============================= */
+var state = {tab:'triage', search:'', pill:'all'};
+
+var PILLS = [
+  {key:'all', label:'All Topics'},
+  {key:'in', label:'🟢 In-Scope'},
+  {key:'out', label:'🔴 Out-of-Scope'},
+  {key:'accounts', label:'👤 Accounts'},
+  {key:'security', label:'🛡️ Security & Phishing'},
+  {key:'drives', label:'📁 Shared Drives'},
+  {key:'calendar', label:'📅 Calendar'},
+  {key:'canned', label:'💬 Canned Replies'}
+];
+
+/* ============================= HELPERS ============================= */
+function el(html){var t=document.createElement('template');t.innerHTML=html.trim();return t.content.firstElementChild;}
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+
+function buildUnifiedIndex(){
+  var items=[];
+  SCOPE_IN.forEach(function(s){items.push({kind:'Scope · In',verdictClass:'in',title:s.title,snippet:s.detail,tags:s.tags.concat(['in']),owner:s.owner,detailHtml:'<p>'+s.detail+'</p><p class="owner"><b>Owner:</b> '+s.owner+'</p>'});});
+  SCOPE_OUT.forEach(function(s){items.push({kind:'Scope · Out',verdictClass:'out',title:s.title,snippet:s.detail,tags:s.tags.concat(['out']),owner:s.to,detailHtml:'<p>'+s.detail+'</p><p class="owner"><b>Transfer to:</b> '+s.to+'</p>'});});
+  SOPS.forEach(function(s){
+    var stepsHtml='<ol>'+s.steps.map(function(st){return '<li>'+st+'</li>';}).join('')+'</ol>';
+    if(s.note){stepsHtml+='<p class="owner" style="margin-top:6px;"><b>Note:</b> '+s.note+'</p>';}
+    items.push({kind:'SOP '+s.n,verdictClass:'',title:s.title,snippet:s.steps[0],tags:s.tags,owner:s.role,detailHtml:stepsHtml+'<p class="owner"><b>Role:</b> '+s.role+'</p>'});
+  });
+  CANNED.forEach(function(c){items.push({kind:'Canned reply',verdictClass:'',title:c.title,snippet:c.body.split('\n')[0],tags:c.tags,owner:'',detailHtml:'<pre style="white-space:pre-wrap;font-family:var(--font-body);font-size:13px;margin:0;">'+esc(c.body)+'</pre>'});});
+  return items;
+}
+var UNIFIED = buildUnifiedIndex();
+
+function matchesPill(item,pillKey){
+  if(pillKey==='all') return true;
+  return item.tags.indexOf(pillKey)>-1;
+}
+function matchesSearch(item,q){
+  if(!q) return true;
+  var hay=(item.title+' '+item.snippet+' '+item.kind+' '+item.owner+' '+item.tags.join(' ')).toLowerCase();
+  return hay.indexOf(q.toLowerCase())>-1;
+}
+
+/* ============================= RENDER: static lists ============================= */
+function renderPills(){
+  var row=document.getElementById('pillRow');
+  row.innerHTML='';
+  PILLS.forEach(function(p){
+    var btn=el('<button class="pill" data-pill="'+p.key+'">'+p.label+'</button>');
+    if(p.key===state.pill) btn.classList.add('active');
+    btn.addEventListener('click',function(){
+      state.pill = (state.pill===p.key && p.key!=='all') ? 'all' : p.key;
+      syncView();
+    });
+    row.appendChild(btn);
+  });
+}
+
+function scopeCardHtml(item,cls){
+  var badgeCls = cls==='in' ? 'in' : 'out';
+  var badgeText = cls==='in' ? 'IN SCOPE' : 'TRANSFER';
+  var ownerLine = cls==='in' ? ('<b>Owner</b> '+item.owner) : ('<b>Transfer to</b> '+item.to);
+  return '<div class="card '+cls+'">'+
+    '<div class="card-top"><h3>'+item.title+'</h3><span class="badge '+badgeCls+'">'+badgeText+'</span></div>'+
+    '<p>'+item.detail+'</p>'+
+    '<div class="owner">'+ownerLine+'</div>'+
+  '</div>';
+}
+function renderScope(){
+  document.getElementById('scopeInGrid').innerHTML = SCOPE_IN.map(function(s){return scopeCardHtml(s,'in');}).join('');
+  document.getElementById('scopeOutGrid').innerHTML = SCOPE_OUT.map(function(s){return scopeCardHtml(s,'out');}).join('');
+}
+
+function renderSops(){
+  var host=document.getElementById('sopList');
+  host.innerHTML = SOPS.map(function(s){
+    var steps = s.steps.map(function(st){return '<li>'+st+'</li>';}).join('');
+    var note = s.note ? '<div class="note"><b>Watch out:</b> '+s.note+'</div>' : '';
+    return '<div class="sop"><div class="sop-head"><span class="sop-num">SOP '+String(s.n).padStart(2,'0')+'</span><h3>'+s.title+'</h3></div>'+
+      '<div class="role-line"><b>Role required:</b> '+s.role+'</div>'+
+      '<ol>'+steps+'</ol>'+note+'</div>';
+  }).join('');
+}
+
+function renderEscalation(){
+  var body=document.getElementById('escalationBody');
+  body.innerHTML = ESCALATION.map(function(e){
+    return '<tr><td class="entity">'+e.entity+'</td><td>'+e.resp+'</td><td class="contact">'+e.contact+'</td></tr>';
+  }).join('');
+}
+
+function renderCanned(){
+  var host=document.getElementById('cannedList');
+  host.innerHTML='';
+  CANNED.forEach(function(c,idx){
+    var card=el('<div class="reply-card"><div class="reply-head"><h3>'+c.title+'</h3><button class="copy-btn" data-idx="'+idx+'">📋 Copy</button></div><div class="reply-body"></div></div>');
+    card.querySelector('.reply-body').textContent = c.body;
+    host.appendChild(card);
+  });
+  host.querySelectorAll('.copy-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var text = CANNED[+btn.dataset.idx].body;
+      var done=function(){
+        btn.classList.add('copied'); btn.innerHTML='✓ Copied';
+        setTimeout(function(){btn.classList.remove('copied'); btn.innerHTML='📋 Copy';},1500);
+      };
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(done).catch(done);
+      } else {
+        var ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta);
+        ta.select(); try{document.execCommand('copy');}catch(e){} document.body.removeChild(ta); done();
+      }
+    });
+  });
+}
+
+/* ============================= TRIAGE ============================= */
+function renderTriageCategories(){
+  var sel=document.getElementById('triageCategory');
+  TRIAGE.forEach(function(c){
+    var opt=el('<option value="'+c.key+'">'+c.label+'</option>');
+    sel.appendChild(opt);
+  });
+}
+function renderTriageIssues(catKey){
+  var sel=document.getElementById('triageIssue');
+  sel.innerHTML='';
+  var cat = TRIAGE.filter(function(c){return c.key===catKey;})[0];
+  if(!cat){
+    sel.innerHTML='<option value="">Select a category first…</option>';
+    sel.disabled=true;
+    return;
+  }
+  sel.disabled=false;
+  sel.innerHTML='<option value="">Select an issue…</option>' + cat.issues.map(function(iss,i){
+    return '<option value="'+i+'">'+iss.label+'</option>';
+  }).join('');
+}
+function renderVerdict(catKey,issueIdx){
+  var host=document.getElementById('triageOutput');
+  var cat = TRIAGE.filter(function(c){return c.key===catKey;})[0];
+  if(!cat || issueIdx==='' || issueIdx==null){
+    host.innerHTML='<div class="empty-state">Select a category and issue above to see the triage verdict.</div>';
+    return;
+  }
+  var iss = cat.issues[+issueIdx];
+  var verdictLabel = iss.verdict==='in' ? '✅ IN SCOPE (TCS)' : '⛔ OUT OF SCOPE (TRANSFER)';
+  host.innerHTML =
+    '<div class="verdict-card '+iss.verdict+'">'+
+      '<div class="verdict-stripe '+iss.verdict+'">'+verdictLabel+'</div>'+
+      '<h3 style="font-size:19px;">'+iss.label+'</h3>'+
+      '<div class="verdict-grid">'+
+        '<div class="verdict-block"><h4>Required role / owner</h4><p>'+iss.owner+'</p></div>'+
+        '<div class="verdict-block"><h4>Policy explanation</h4><p>'+iss.policy+'</p></div>'+
+        '<div class="verdict-block" style="grid-column:1 / -1;"><h4>Step-by-step action</h4><ol>'+iss.steps.map(function(s){return '<li>'+s+'</li>';}).join('')+'</ol></div>'+
+      '</div>'+
+    '</div>';
+}
+
+/* ============================= RESULTS / SEARCH ============================= */
+function renderResults(){
+  var q=state.search, pill=state.pill;
+  var results = UNIFIED.filter(function(it){return matchesPill(it,pill) && matchesSearch(it,q);});
+  var banner=document.getElementById('resultsBanner');
+  var pillLabel = PILLS.filter(function(p){return p.key===pill;})[0].label;
+  var descBits=[];
+  if(q) descBits.push('"'+q+'"');
+  if(pill!=='all') descBits.push(pillLabel);
+  banner.innerHTML = '<span>Showing <strong>'+results.length+'</strong> result'+(results.length===1?'':'s')+
+    (descBits.length? ' for '+descBits.join(' + ') : '')+'</span><button id="resetSearchBtn">Reset ✕</button>';
+  document.getElementById('resetSearchBtn').addEventListener('click',function(){
+    state.search=''; state.pill='all';
+    document.getElementById('searchInput').value='';
+    syncView();
+  });
+  var grid=document.getElementById('resultsGrid');
+  if(!results.length){
+    grid.innerHTML='<div class="empty-state" style="grid-column:1/-1;">No matches. Try a different keyword.</div>';
+    return;
+  }
+  grid.innerHTML = results.map(function(it,i){
+    var cls = it.verdictClass || '';
+    return '<div class="card '+cls+'">'+
+      '<div class="card-top"><h3>'+it.title+'</h3><span class="tag">'+it.kind+'</span></div>'+
+      '<p>'+it.snippet+'</p>'+
+      '<button class="card-toggle" data-i="'+i+'">Show details ▾</button>'+
+      '<div class="card-detail" id="detail-'+i+'">'+it.detailHtml+'</div>'+
+    '</div>';
+  }).join('');
+  grid.querySelectorAll('.card-toggle').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var d=document.getElementById('detail-'+btn.dataset.i);
+      var open=d.classList.toggle('open');
+      btn.textContent = open ? 'Hide details ▴' : 'Show details ▾';
+    });
+  });
+}
+
+/* ============================= VIEW SWITCHING ============================= */
+function syncView(){
+  var filtering = !!state.search || state.pill!=='all';
+  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active');});
+  document.querySelectorAll('.pill').forEach(function(p){p.classList.toggle('active', p.dataset.pill===state.pill);});
+  document.getElementById('searchClearBtn').style.display = state.search ? 'flex' : 'none';
+
+  if(filtering){
+    document.getElementById('view-results').classList.add('active');
+    renderResults();
+  } else {
+    document.getElementById('view-'+state.tab).classList.add('active');
+  }
+  document.querySelectorAll('.tab-btn').forEach(function(b){
+    b.classList.toggle('active', b.dataset.tab===state.tab && !filtering);
+  });
+}
+
+/* ============================= WIRE UP ============================= */
+document.querySelectorAll('.tab-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    state.tab=btn.dataset.tab; state.search=''; state.pill='all';
+    document.getElementById('searchInput').value='';
+    syncView();
+  });
+});
+
+var searchInput=document.getElementById('searchInput');
+searchInput.addEventListener('input',function(){
+  state.search=searchInput.value.trim();
+  syncView();
+});
+document.getElementById('searchClearBtn').addEventListener('click',function(){
+  state.search=''; searchInput.value=''; syncView();
+});
+
+var themeToggle=document.getElementById('themeToggle');
+themeToggle.addEventListener('click',function(){
+  var root=document.documentElement;
+  var current = root.getAttribute('data-theme');
+  var goingDark;
+  if(current==='dark'){ goingDark=false; }
+  else if(current==='light'){ goingDark=true; }
+  else { goingDark = !window.matchMedia('(prefers-color-scheme: dark)').matches; }
+  root.setAttribute('data-theme', goingDark ? 'dark' : 'light');
+  themeToggle.setAttribute('aria-pressed', String(goingDark));
+  document.getElementById('themeLabel').textContent = goingDark ? 'Dark' : 'Light';
+});
+(function initThemeLabel(){
+  var dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  document.getElementById('themeLabel').textContent = dark ? 'Dark' : 'Light';
+})();
+
+document.getElementById('triageCategory').addEventListener('change',function(){
+  renderTriageIssues(this.value);
+  renderVerdict(this.value, null);
+});
+document.getElementById('triageIssue').addEventListener('change',function(){
+  renderVerdict(document.getElementById('triageCategory').value, this.value);
+});
+
+/* ============================= INIT ============================= */
+renderPills();
+renderScope();
+renderSops();
+renderEscalation();
+renderCanned();
+renderTriageCategories();
+syncView();
+
+})();
+</script>
